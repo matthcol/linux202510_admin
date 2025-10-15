@@ -279,10 +279,11 @@ network:
       dhcp4: no
       optional: true
       addresses:
-        - 192.168.173.4/24
-      routes:
-        - to: 0.0.0.0/0
-          via: 192.168.173.1
+        - 192.168.173.3/24
+#      routes:
+#        - to: 192.168.173.0/24
+#          scope: link  
+#          # better than gateway for host-only (via: 192.168.173.1)
 ```
 
 ```
@@ -296,6 +297,24 @@ sudo netplan try
 
 ### Nom d'hôte
 
+```
 /etc/hostname
 /etc/hosts
+```
+
+### Résolution de noms et routage
+Resolution DNS
+```
+nslookup github.com
+dig github.com
+ping github.com   # 1ère étape du ping
+```
+Routage:
+```
+ip route
+ip route get 127.0.0.1
+ip route get 140.82.121.3
+ip route get 192.168.173.4
+ip route get 192.168.173.5
+```
 
