@@ -230,4 +230,72 @@ Version de java:
 sudo update-alternatives --config java
 ```
 
+## Réseaux
+
+### Ancienne recette
+
+Le fichier /etc/network/interfaces
+
+```
+# /etc/network/interfaces
+# Configuration réseau en DHCP
+
+# Interface loopback (obligatoire)
+auto lo
+iface lo inet loopback
+
+# Interface Ethernet principale en DHCP
+auto enp0s3
+iface enp0s3 inet dhcp
+
+# Interface Ethernet principale en DHCP
+auto enp0s8
+iface enp0s8 inet dhcp
+```
+
+### Netplan (ubuntu)
+
+Fichier /etc/netplan/50-cloud-init.yaml (ou autre dans ce répertoire)
+en DHCP
+```
+network:
+  version: 2
+  ethernets:
+    enp0s3:
+      dhcp4: true
+    enp0s8:
+      dhcp4: true
+      optional: true
+```
+
+En version statique:
+```
+network:
+  version: 2
+  ethernets:
+    enp0s3:
+      dhcp4: true
+    enp0s8:
+      dhcp4: no
+      optional: true
+      addresses:
+        - 192.168.173.4/24
+      routes:
+        - to: 0.0.0.0/0
+          via: 192.168.173.1
+```
+
+```
+sudo netplan generate
+sudo netplan apply
+```
+ou 
+```
+sudo netplan try
+````
+
+### Nom d'hôte
+
+/etc/hostname
+/etc/hosts
 
