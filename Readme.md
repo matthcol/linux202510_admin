@@ -1,3 +1,7 @@
+# Commandes Linux
+
+## Système de fichiers
+```
 pwd : où suis je
 
 ls    : lister
@@ -8,25 +12,29 @@ ls -al : 2 options cumulées
 ls --help : aide de la commande
 
 wc -l : compter des lignes
+```
 
 Visualisation e fichier (texte):
+```
 cat : voir le contenu d'un fichier
 more : idem (défilement)
 less : mieux que more
 head : début du fichier
 tail : fin de fichier
+```
 
 Editeur de texte
+```
 vi
 vim
 nano
+```
 
 
-
-
+```
 grep sudo /etc/group        # recherche du mot sudo dans le fichier /etc/group
 ls /usr/bin | grep ls       # recherche du mot ls dans le résultat de la commande précédente
-
+```
 ## Utilisateurs
 
 Supervision
