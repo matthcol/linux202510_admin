@@ -557,3 +557,23 @@ Outils de (dé)compression:
 - gzip/gunzip
 - bzip2/bunzip2
 - 7z
+
+## Logs
+```
+journactl
+dmesg
+répertoire /var/log/*
+config de la rotation des logs: logrotate
+rsyslog : transfert/agrégation de logs
+```
+
+## modules noyaux
+```
+lsmod                 # liste des modules
+modprobe usb_storage  # installer un module supplémentaire
+```
+
+## Sécurité
+- Parefeux: iptables, firewalld, ufw
+- ParAmor (ubuntu) ou SE Linux (RHEL) : sécurité interne process vs fichier/network
+- Crypter disque
