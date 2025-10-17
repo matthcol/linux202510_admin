@@ -436,15 +436,43 @@ Creer 3 niveaux:
 ```
 vgcreate -f docker-vg /dev/sdc
 vgs
-lvcreate -n image-lv -L 3G docker-vg
+lvcreate -n docker-lv -L 3G docker-vg
 lvcreate -n volume-lv -L 3G docker-vg
 lvs
 ```
 
+Formattage:
+```
+mkfs -t ext4 /dev/docker-vg/docker-lv
+mkfs -t ext4 /dev/docker-vg/volume-lv
+```
+
+Fichier fstab (extrait):
+```
+/dev/docker-vg/docker-lv /var/lib/docker ext4 defaults 0 1
+/dev/docker-vg/volume-lv /var/lib/docker/volumes ext4 defaults 0 1
+```
+
 ## Docker
+### Installation
+Ajouter du repot officiel de docker avec sa clé:
+https://docs.docker.com/engine/install/ubuntu/
+
+### Premières commandes
+```
 docker pull mysql:8       # télécharger une image
 docker image ls           # lister les images
 docker run --name mysql-dbski -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:8
 docker exec -it mysql-dbski bash
     mysql -u root -p
         show databases;
+```
+
+### Composition docker
+Exemple de composition avec base de données métier et mapping de port (3316 -> 3306)
+```
+cd ~/linux202510_admin/docker-mysql-dbmovie
+docker compose up -d    # lance le(s) conteneurs décrit(s) dans le docker-compose.yml
+docker ps
+sudo ss -plantu         # montre le port 3316 ouvert sur ubuntu et redirigé vers docker
+```
