@@ -72,22 +72,26 @@ sudo useradd -m -s /bin/bash stephane
 ```
 
 sudo une_commande : faire la commande en tant que root
+```
 sudo su -               # se reloguer en tant que root
 sudo su - aurelien      # se reloguer en tant qu'aurélien
 sudo su                 # changer d'identité => root (environnement et répertoire inchangé)
 sudo su aurelien        # changer d'identité => aurelien (environnement et répertoire inchangé)
+```
 
 ## Variables d'environnments
-
+```
 env                         # lister toutes les variables
 echo $PATH                  # afficher le contenu d'une variable
 export METEO_TMP_DIR=/tmp   # (re)définir une variable
-
+```
 ## Installation de logiciel via la distribution
 Gestionnaire pour debian, ubuntu: apt
 
+```
 apt update
 apt install unzip
+```
 
 ## Atelier
 Installation de Tomcat manuelle en passant par le zip.
@@ -175,15 +179,19 @@ netstat -plan | grep -i listen    # -i = ignore case
 
 ## Services Systemd
 ### Gestion des services
+```
 systemctl status tomcat
 systemctl stop tomcat
 systemctl start tomcat
 systemctl enable tomcat
 systemctl disable tomcat
+```
 
 ### Journaux de services
+```
 journalctl -u ssh
 journalctl -u ssh -n 20     # 20 dernières lignes
+```
 
 ### Types de services
 - simple (défaut)
@@ -196,16 +204,19 @@ journalctl -u ssh -n 20     # 20 dernières lignes
 ### Niveau de démarrage
 Un fichier .target rassemble des services. L'OS démarre sur un fichier .target.
 
+```
 systemctl get-default               # niveau de démarrage
 systemctl set-default multi-user    # changer le niveau de démarrage
 systemctl isolate rescue            # changer à chaud le niveau
+```
 
 ### Reboot
-
+```
 reboot
 shutdown -r
 systemctl isolate reboot
 init 6  # compatibilité System V
+```
 
 ## Aptitude
 Gestionnaire de paquets ubuntu (ou debian)
@@ -321,16 +332,19 @@ ip route get 192.168.173.5
 ## Ansible
 
 Valider l'inventaire (fichier hosts)
+```
 ansible -k -i hosts -m ping all
-
+```
 Création d'un jeu de clé SSH pour le déploiement (id_rsa_deploy,  id_rsa_deploy.pub):
+```
 ssh-keygen -t rsa
-
+```
 Jouer le playbook Ansible:
+```
 ansible-playbook -k -K -i hosts playbook-deploy.yml
-
+```
 Agent SSH
-
+```
 ssh-agent   # copy-paste result
 ssh-add -L  # liste des clés déverouillées
 ssh-add ~/.ssh/id_rsa_deploy   # confier une clé
@@ -345,7 +359,7 @@ ssh-add -D    # retirer toutes les clés  (-d 1 clé)
 ## Gestion de disques
 
 GUI: gparted
-
+```
 df
 df -h     # unité informatique
 df -H     # unité internationale
@@ -357,18 +371,21 @@ fdisk /dev/sdb  # partitionner (parted, gparted)
 
 sudo mkfs.ext4 /dev/sdb1
 sudo mkfs -t ext4 /dev/sdb2
-
+```
 
 Créer un gros fichier à partir /dev/zero ou /dev/random
+```
 dd bs=1024 count=1048576 if=/dev/zero of=video2.mp4
-
+```
 Créer plein de fichier
+```
 for i in $(seq 1 50000); do touch "cookie-$i.txt"; done
 for i in $(seq 1 100); do  echo "contenu $i" > "cookie-$i.txt"; done
-
+```
 Si disque système monté en lecture seule, on peut tenter de le remonter en écriture
+```
 sudo mount -o remount,rw /
-
+```
 
 Changer l'UUID (ext4):
 - tune2fs:
@@ -380,12 +397,12 @@ sudo tune2fs -U random /dev/mapper/vg-lv
 sudo tune2fs -U 12345678-1234-1234-1234-123456789abc /dev/mapper/vg-lv
 
 # Voir l'UUID
-```
 lsblk -f
 sudo tune2fs -l /dev/mapper/vg-lv | grep UUID
 sudo dumpe2fs /dev/mapper/vg-lv | grep UUID
 sudo blkid /dev/mapper/vg-lv
 ```
+
 - alternative avec uuidgen
 ```
 # Générer un UUID
@@ -457,6 +474,9 @@ Fichier fstab (extrait):
 ### Installation
 Ajouter du repot officiel de docker avec sa clé:
 https://docs.docker.com/engine/install/ubuntu/
+
+Attention à cause des droits restreints, faire sudo df -h pour voir les volumes LVM
+associés à docker montés.
 
 ### Premières commandes
 ```
