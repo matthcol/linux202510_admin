@@ -496,3 +496,64 @@ docker compose up -d    # lance le(s) conteneurs décrit(s) dans le docker-compo
 docker ps
 sudo ss -plantu         # montre le port 3316 ouvert sur ubuntu et redirigé vers docker
 ```
+
+## Planification
+2 outils:
+- at : ponctuel
+- cron : régulier
+
+at -t 10171406 # saisi le job sur l'entree standard (vérifier le vocabulaire dispo sur votre version de at)
+```
+at now + 30 minutes
+at now + 2 hours
+at now + 3 days
+at now + 1 week
+at tomorrow
+at 10:30 tomorrow
+at 14:00 friday
+at 09:00 next monday
+at noon
+at midnight
+at 5:30 PM
+```
+
+atq       # liste de jobs en attente
+atrm 5    # suppression job 5
+at -c 5   # le detail du job 5
+
+echo 'tar czf "formation-$(date +%Y%m%d%H%M).tgz" linux202510_admin' | at -t 10171500
+
+## Cron
+1 fichier crontab permet de planifier des tâches avec cron (service)
+
+2 types de crontab:
+- systeme : /etc/crontab + /etc/cron.d/*
+- user
+
+crontab -l   # voir sa crontab
+
+Exemple de crontab système extra: /etc/cron.d/dumber
+```
+*/5 9-17 * * 1-5 matthias date >> /tmp/dumber.txt
+```
+
+NB: attention à la variable PATH, au current directory et pas d'affichage (stdout ou stderr)
+
+## Archivage tar
+- cvf : c (create) v (verbose) f (file)
+- cvzf : create + gzip (ou 1 autre lettre pour un autre format)
+- tvf : tester
+- xvf : extraire
+
+
+```
+tar cvf formation.tar linux202510_admin/
+tar cvfz formation.tar.gz linux202510_admin/
+tar cvfz formation-2025101715000.tgz linux202510_admin/
+```
+
+Outils de (dé)compression:
+- zip/unzip
+- gzip/gunzip
+- bzip2/bunzip2
+- 7z
