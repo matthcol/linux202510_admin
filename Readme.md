@@ -318,3 +318,133 @@ ip route get 192.168.173.4
 ip route get 192.168.173.5
 ```
 
+## Ansible
+
+Valider l'inventaire (fichier hosts)
+ansible -k -i hosts -m ping all
+
+Création d'un jeu de clé SSH pour le déploiement (id_rsa_deploy,  id_rsa_deploy.pub):
+ssh-keygen -t rsa
+
+Jouer le playbook Ansible:
+ansible-playbook -k -K -i hosts playbook-deploy.yml
+
+Agent SSH
+
+ssh-agent   # copy-paste result
+ssh-add -L  # liste des clés déverouillées
+ssh-add ~/.ssh/id_rsa_deploy   # confier une clé
+
+ssh deployer@192.168.173.4                                # session interactive
+ssh deployer@192.168.173.4 sudo systemctl stop tomcat10   # commande à distance
+scp /etc/passwd deployer@192.168.173.4:/tmp
+
+ssh-add -D    # retirer toutes les clés  (-d 1 clé)
+```
+
+## Gestion de disques
+
+GUI: gparted
+
+df
+df -h     # unité informatique
+df -H     # unité internationale
+
+lsblk
+lsblk -f  # display FS
+
+fdisk /dev/sdb  # partitionner (parted, gparted)
+
+sudo mkfs.ext4 /dev/sdb1
+sudo mkfs -t ext4 /dev/sdb2
+
+
+Créer un gros fichier à partir /dev/zero ou /dev/random
+dd bs=1024 count=1048576 if=/dev/zero of=video2.mp4
+
+Créer plein de fichier
+for i in $(seq 1 50000); do touch "cookie-$i.txt"; done
+for i in $(seq 1 100); do  echo "contenu $i" > "cookie-$i.txt"; done
+
+Si disque système monté en lecture seule, on peut tenter de le remonter en écriture
+sudo mount -o remount,rw /
+
+
+Changer l'UUID (ext4):
+- tune2fs:
+```
+# UUID aléatoire
+sudo tune2fs -U random /dev/mapper/vg-lv
+
+# UUID spécifique
+sudo tune2fs -U 12345678-1234-1234-1234-123456789abc /dev/mapper/vg-lv
+
+# Voir l'UUID
+```
+lsblk -f
+sudo tune2fs -l /dev/mapper/vg-lv | grep UUID
+sudo dumpe2fs /dev/mapper/vg-lv | grep UUID
+sudo blkid /dev/mapper/vg-lv
+```
+- alternative avec uuidgen
+```
+# Générer un UUID
+NEW_UUID=$(uuidgen)
+echo $NEW_UUID
+
+# L'appliquer
+sudo tune2fs -U $NEW_UUID /dev/mapper/vg-lv
+```
+
+- xfs : utiliser les outils xfs_admin et xfs_metadump
+
+### Checker un disque
+NB: se fait automatiquement au bout de plusieurs jours ou plusieurs boot:
+- ext4
+```
+e2fsck -f /dev/sdb1
+```
+
+## LVM
+
+Infos
+```
+pvs
+vgs
+lvs
+
+pvdisplay
+pvdisplay /dev/sda3
+
+vgdisplay
+vgdisplay ubuntu-vg
+
+lvdisplay
+lvdisplay /dev/ubuntu-vg/ubuntu-lv
+```
+
+Etendre un LV
+```
+lvextend -L +2G -r /dev/ubuntu-vg/ubuntu-lv
+lvextend -l +100 -r /dev/ubuntu-vg/ubuntu-lv
+```
+
+Approvisionner un VG avec un nouveau PV
+vgextend ubuntu-vg /dev/sdb3
+
+Creer 3 niveaux:
+```
+vgcreate -f docker-vg /dev/sdc
+vgs
+lvcreate -n image-lv -L 3G docker-vg
+lvcreate -n volume-lv -L 3G docker-vg
+lvs
+```
+
+## Docker
+docker pull mysql:8       # télécharger une image
+docker image ls           # lister les images
+docker run --name mysql-dbski -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:8
+docker exec -it mysql-dbski bash
+    mysql -u root -p
+        show databases;

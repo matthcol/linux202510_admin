@@ -1,0 +1,16 @@
+# Use root/example as user/password credentials
+
+services:
+
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: mysuperpassword
+      MYSQL_DATABASE: dbmovie
+      MYSQL_USER: movie
+      MYSQL_PASSWORD: mysuperpassword2
+    ports:
+      - 3316:3306
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
